@@ -61,47 +61,140 @@ VALUES
 
 ('2026-01-30','Nisha','Female',26,'Delhi','Delhi','Mixer Grinder','Home Appliance',2,4500,500,8500,'Cash','Rohit');
 desc store_sales;
+
+#Display all records.
 select * from store_sales;
+
+# Show customer name, city and product purchased.
 select customer_name, city , product_name from  store_sales;
+
+#Find all customers from Delhi.
 select * from store_sales where city="Delhi";
+
+#Display all Electronics products.
 select product_name from store_sales;
+
+#Find sales greater than ₹30,000.
 select * from store_sales where total_amount > 30000;
+
+#Show customers aged above 30 years.
 select * from store_sales where age > 30;
+
+#Sort records by highest sale amount.
 select * from store_sales order by total_amount desc;
+
+#Display the first 5 records.
 select * from store_sales limit 5;
+
+#Find customers whose names start with 'R'.
 select * from store_sales where customer_name like "R%";
+
+#Display all unique cities.
 select distinct city from store_sales;
+
+#Calculate total sales revenue.
 select sum(total_amount) from store_sales;
+
+#Calculate average sales amount.
 select avg(total_amount) from store_sales;
+
+#Find the maximum sale amount.
 select max(total_amount) from store_sales;
+
+#Find the minimum sale amount.
 select min(total_amount) from store_sales;
+
+#Count total orders.
 select count(quantity) from store_sales;
+
+#Display city-wise total sales.
 select city, sum(total_amount) from store_sales group by city;
+
+#Display category-wise revenue.
 select category, sum(total_amount) from store_sales group by category;
+
+#Count orders by payment mode.
 select payment_mode, count(*) from store_sales group by payment_mode;
+
+#Find customers who have placed more than one order.
 select customer_name, count(*) from store_sales group by customer_name having count(*) >1;
+
+#Find the city with the highest sales.
 select city , sum(total_amount) as totalsales from store_sales group by city order by totalsales desc limit 1;
+
+#Find the category generating the highest revenue
 select category , sum(total_amount) as totalsales from store_sales group by category order by totalsales desc limit 1;
+
+#Display monthly sales revenue.
 select month(order_date)as month , sum(total_amount) as monthlyrevenue from store_sales group by month(order_date) order by month(order_date);
+
+#Find the top 5 highest sales transactions.
 select * from store_sales order by total_amount desc limit 5;
+
+#Display product-wise quantity sold.
 select product_name ,sum(quantity) as total_qty_sold from store_sales group by product_name;
+
+#Calculate average sales by city.
 select city , avg(total_amount) from store_sales group by city; 
+
+#Show gross amount before discount for every order.
 select sale_id,quantity*unit_price as gross_amt from store_sales;
+
+#List customers who paid using UPI.
 select customer_name, payment_mode from store_sales where payment_mode="UPI";
+
+#Find the most popular payment mode.
 select payment_mode,count(*) as order_count from store_sales group by payment_mode order by order_count desc limit 1;
+
+#Display all Furniture products costing more than ₹20,000.
 select product_name from store_sales where unit_price>20000;
+
+#Find customers between ages 25 and 35.
 select customer_name, age from store_sales where age between 25 and 35;
+
+#Count male and female customers.
 select gender, count(gender) from store_sales group by gender;
+
+#Display state-wise revenue.
 select state, sum(total_amount) from store_sales group by state;
+
+#Find the salesperson with the maximum revenue.
 select salesperson , max(total_amount) from store_sales group by salesperson;
+
+#Create a business KPI report showing:
+Total Orders
+Total Revenue
+Average Order Value
+Highest Sale
+Lowest Sale
 select count(distinct sale_id) as total_orders, sum(total_amount) as total_revenue, avg(total_amount) as avg_total_order, max(total_amount) as highest_sale,
 min(total_amount) as lowest_sale from store_sales;
-select  count(distinct customer_name) as total_customers from store_sales;
-select city , avg(total_amount) as city_wise_sales from store_sales group by city;
-select category , sum(total_amount) as totalsales from store_sales group by category;
-select payment_mode,count(*) as order_count from store_sales group by payment_mode;
-select salesperson, count(sale_id) as total_orders, sum(total_amount)as total_revenue,  avg(total_amount) as avg_total_order, 
-max(total_amount) as highest_sale, count(distinct customer_name) as total_customers from store_sales group by salesperson order by total_revenue desc;
-SELECT DATE_FORMAT(order_date, '%Y-%m') AS month, SUM(total_amount) AS monthly_sales FROM store_sales
-GROUP BY DATE_FORMAT(order_date, '%Y-%m')ORDER BY month;
-select product_name ,count(product_name) as total_products from store_sales group by product_name order by total_products desc limit 1;
+
+#Real-World Business KPIs
+📊 Overall Business KPIs
+  select 
+	    sum(total_amount) as "Total Revenue",count(sale_id) as "Total Orders",count(distinct customer_name) as "Total Customers" from store_sales;
+
+🏙️ City-wise Sales Performance
+    select city,sum(total_amount) as "City-wise Sales" from store_sales group by 1;
+   
+📦 Category-wise Revenue
+  select category,sum(total_amount) as "Category-wise Revenue" from store_sales group by 1;
+
+💳 Payment Mode Analysis
+  select payment_mode,count(*) as "Payment Mode Analysis" from store_sales group by 1 order by 2 desc;
+
+👨‍💼 Salesperson Performance  
+  select salesperson,sum(total_amount) as "Salesperson Performance" from store_sales group by 1 order by 2 desc;
+
+📅 Monthly Sales Trend
+  select monthname(order_date),count(*) as "Monthly Sales Trend",sum(total_amount) as "Monthly Sale" from store_sales group by 1 order by 2 desc;
+
+💰 Average Order Value
+  select avg(total_amount) as "Average Order Value" from store_sales;
+
+🏆 Best-Selling Productt
+  select product_name,count(*) as "Best-Selling Product" from store_sales group by 1 having count(*) >1 limit 1;
+
+#Rank customers based on their total transaction amount. 
+select customer_name,sum(total_amount) ,rank() over(order by sum(total_amount) desc)from store_sales group by 1;
